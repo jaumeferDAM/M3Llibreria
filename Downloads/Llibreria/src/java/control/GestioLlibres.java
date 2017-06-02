@@ -8,7 +8,7 @@ import model.*;
 import persistencia.*;
 
 public class GestioLlibres extends HttpServlet {
-
+    private Llibre llibre;
     private Connection con;
     private ConfiguracioConnexio dbCon;
 
@@ -43,10 +43,15 @@ public class GestioLlibres extends HttpServlet {
                 anarAPagina("afegir.jsp", request, response);
                 break;
                 case "cercar":
-                Llibre llibre = cercaPerISBN(request, response);
+                llibre = cercaPerISBN(request, response);
                 request.setAttribute("cercat", llibre);
                 anarAPagina("modifica.jsp", request, response);
                 break;
+                case "cercaPerNom":
+                    llibre = cercaPerNom(request,response);
+                    request.setAttribute("cercat", llibre);
+                    anarAPagina("buscado", request, response);
+                    break;
         }
 
     }
@@ -158,4 +163,18 @@ public class GestioLlibres extends HttpServlet {
         }
         return resposta;
     }
+
+    private Llibre cercaPerNom(HttpServletRequest request, HttpServletResponse response) {
+        LlibreDao dao = null;
+        String titol;
+        dao = new LlibreDao(con);
+        Llibre resposta;
+        if (!(titol = request.getParameter("titol_")).matches("[0-9]{13}")) {
+            resposta = null;
+        } else {
+            resposta = dao.cercaPerNom(titol);
+        }
+        return resposta;
+    }
 }
+

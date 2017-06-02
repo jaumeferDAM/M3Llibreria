@@ -17,7 +17,7 @@ public class LlibreDao {
         boolean afegit = true;
         PreparedStatement pt = null;
         String sentencia = "INSERT INTO JFERNANDEZ.Llibres(TITOL, AUTOR, ANYEDICIO, ISBN, EDITORIAL, ESTOC)"
-        + " VALUES(?,?,?,?,?,?)";
+                + " VALUES(?,?,?,?,?,?)";
         try {
             pt = con.prepareStatement(sentencia);
             pt.setString(1, l.getTitol());
@@ -26,8 +26,7 @@ public class LlibreDao {
             pt.setString(4, l.getIsbn());
             pt.setString(5, l.getEditorial());
             pt.setInt(6, l.getEstoc());
-            
-            
+
             if (pt.executeUpdate() == 0) {
                 afegit = false;
             }
@@ -42,7 +41,7 @@ public class LlibreDao {
     }
 
     public Llibre cercarPerISBN(String isbn) {
-        String consulta = " SELECT * FROM LLIBRE WHERE isbn='" + isbn + "'";
+        String consulta = " SELECT * FROM LLIBRES WHERE isbn='" + isbn + "'";
         Statement st;
         ResultSet rs;
         Llibre llib = null;
@@ -50,6 +49,27 @@ public class LlibreDao {
         try {
             st = con.createStatement();
             rs = st.executeQuery(consulta);
+            if (rs.next()) {
+                llib = new Llibre(rs.getString(1), rs.getString(2), rs.getString(3),
+                        rs.getString(4), rs.getInt(5), rs.getInt(6));
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return llib;
+    }
+
+    public Llibre cercaPerNom(String nom) {
+        String cnslta = " SELECT FROM LLIBRES WHERE TITOL='" + nom + "'";
+        Statement st;
+        ResultSet rs;
+        Llibre llib = null;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(cnslta);
             if (rs.next()) {
                 llib = new Llibre(rs.getString(1), rs.getString(2), rs.getString(3),
                         rs.getString(4), rs.getInt(5), rs.getInt(6));
